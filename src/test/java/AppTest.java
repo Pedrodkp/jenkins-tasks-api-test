@@ -1,31 +1,23 @@
-package com.upiara.tasks;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.http.ContentType;
 
 public class AppTest {
-    @BeforeClass
-    public static void setup() {
-        RestAssured.baseURI = "http://localhost:8001/tasks-backend";
-    }
-
     @Test
-    public void deveRetornarTarefas() {
+    public void deveRetornarTarefasTest() {
         RestAssured.given()
         .when()
-            .get("/todo")
+            .get("http://localhost:8001/tasks-backend/todo")
         .then()
             .log().all()
             .statusCode(200);
     }
 
     @Test
-    public void deveAdcionarTarefaComSucesso() {
+    public void deveAdcionarTarefaComSucessoTest() {
         RestAssured.given()
             .contentType(ContentType.JSON)
             .body("{\n" + //
@@ -33,14 +25,14 @@ public class AppTest {
                 "    \"dueDate\": \"2030-12-30\"\n" + //
                 "}")
         .when()
-            .post("/todo")
+            .post("http://localhost:8001/tasks-backend/todo")
         .then()
             .log().all()
             .statusCode(201);
     }
 
     @Test
-    public void naoDeveAdcionarTarefaInvalida() {
+    public void naoDeveAdcionarTarefaInvalidaTest() {
         RestAssured.given()
             .contentType(ContentType.JSON)
             .body("{\n" + //
@@ -48,7 +40,7 @@ public class AppTest {
                 "    \"dueDate\": \"2010-12-30\"\n" + //
                 "}")
         .when()
-            .post("/todo")
+            .post("http://localhost:8001/tasks-backend/todo")
         .then()
             .log().all()
             .statusCode(400)
