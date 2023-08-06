@@ -17,8 +17,8 @@ public class AppTest {
     }
 
     @Test
-    public void deveAdcionarTarefaComSucessoTest() {
-        RestAssured.given()
+    public Integer deveAdcionarTarefaComSucessoTest() {
+        Integer id = RestAssured.given()
             .contentType(ContentType.JSON)
             .body("{\n" + //
                 "    \"task\": \"Teste via API\",\n" + //
@@ -28,7 +28,9 @@ public class AppTest {
             .post("http://localhost:8001/tasks-backend/todo")
         .then()
             .log().all()
-            .statusCode(201);
+            .statusCode(201)
+            .extract().path("id");
+        return id;
     }
 
     @Test
@@ -45,5 +47,18 @@ public class AppTest {
             .log().all()
             .statusCode(400)
             .body("message", CoreMatchers.is("Due date must not be in past"));
+    }
+
+    @Test
+    public void deveRemoverTarefaComSucessoTest() {
+        Integer id = deveAdcionarTarefaComSucessoTest();
+        System.out.println(id);
+
+        RestAssured.given()
+        .when()
+            .delete("http://localhost:8001/tasks-backend/todo/"+id)
+        .then()
+            .log().all()
+            .statusCode(204);
     }
 }
